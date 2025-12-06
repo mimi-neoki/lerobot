@@ -122,8 +122,8 @@ vla0 = [
     "lerobot[transformers-dep]",
     "peft>=0.14.0,<1.0.0",
     "qwen-vl-utils>=0.0.8,<0.1.0",
-    "bitsandbytes>=0.45.0,<0.48.0",
     "Pillow>=10.0.0,<13.0.0",
+    "tbparse>=0.0.7,<0.1.0",
 ]
 groot = [
     "lerobot[transformers-dep]",
