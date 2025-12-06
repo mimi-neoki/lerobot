@@ -89,7 +89,8 @@ class VLA0Policy(PreTrainedPolicy):
 
     # ---- Training / optimisation helpers ----
     def get_optim_params(self) -> dict[str, Any]:
-        return {"params": [p for p in self.parameters() if p.requires_grad]}
+        # Return a flat list of trainable parameters.
+        return [p for p in self.parameters() if p.requires_grad]
 
     def set_dataset_stats(self, dataset_stats: dict | None):
         """Adapt LeRobot stats to vla0's expected format."""
