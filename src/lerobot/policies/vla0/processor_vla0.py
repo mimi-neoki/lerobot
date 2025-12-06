@@ -81,7 +81,7 @@ class VLA0PackInputsProcessor(ProcessorStep):
 
             # Move channels last and convert to uint8 in [0, 255]
             tensor = tensor.permute(0, 1, 3, 4, 2).contiguous()
-            if tensor.dtype.is_floating_point():
+            if tensor.is_floating_point():
                 if tensor.max() <= 1.01:
                     tensor = tensor * 255.0
                 tensor = tensor.clamp(0, 255).round()
