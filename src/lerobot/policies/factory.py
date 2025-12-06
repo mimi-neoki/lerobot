@@ -37,6 +37,7 @@ from lerobot.policies.pretrained import PreTrainedPolicy
 from lerobot.policies.sac.configuration_sac import SACConfig
 from lerobot.policies.sac.reward_model.configuration_classifier import RewardClassifierConfig
 from lerobot.policies.smolvla.configuration_smolvla import SmolVLAConfig
+from lerobot.policies.vla0.configuration_vla0 import VLA0Config
 from lerobot.policies.tdmpc.configuration_tdmpc import TDMPCConfig
 from lerobot.policies.utils import validate_visual_features_consistency
 from lerobot.policies.vqbet.configuration_vqbet import VQBeTConfig
@@ -59,7 +60,7 @@ def get_policy_class(name: str) -> type[PreTrainedPolicy]:
 
     Args:
         name: The name of the policy. Supported names are "tdmpc", "diffusion", "act",
-              "vqbet", "pi0", "pi05", "sac", "reward_classifier", "smolvla".
+              "vqbet", "pi0", "pi05", "sac", "reward_classifier", "smolvla", "groot", "vla0".
 
     Returns:
         The policy class corresponding to the given name.
@@ -107,6 +108,10 @@ def get_policy_class(name: str) -> type[PreTrainedPolicy]:
         from lerobot.policies.groot.modeling_groot import GrootPolicy
 
         return GrootPolicy
+    elif name == "vla0":
+        from lerobot.policies.vla0.modeling_vla0 import VLA0Policy
+
+        return VLA0Policy
     else:
         raise NotImplementedError(f"Policy with name {name} is not implemented.")
 
@@ -121,7 +126,7 @@ def make_policy_config(policy_type: str, **kwargs) -> PreTrainedConfig:
     Args:
         policy_type: The type of the policy. Supported types include "tdmpc",
                      "diffusion", "act", "vqbet", "pi0", "pi05", "sac", "smolvla",
-                     "reward_classifier".
+                     "reward_classifier", "groot", "vla0".
         **kwargs: Keyword arguments to be passed to the configuration class constructor.
 
     Returns:
@@ -150,6 +155,8 @@ def make_policy_config(policy_type: str, **kwargs) -> PreTrainedConfig:
         return RewardClassifierConfig(**kwargs)
     elif policy_type == "groot":
         return GrootConfig(**kwargs)
+    elif policy_type == "vla0":
+        return VLA0Config(**kwargs)
     else:
         raise ValueError(f"Policy type '{policy_type}' is not available.")
 
@@ -329,6 +336,13 @@ def make_pre_post_processors(
             config=policy_cfg,
             dataset_stats=kwargs.get("dataset_stats"),
         )
+    elif isinstance(policy_cfg, VLA0Config):
+        from lerobot.policies.vla0.processor_vla0 import make_vla0_pre_post_processors
+
+        processors = make_vla0_pre_post_processors(
+            config=policy_cfg,
+            dataset_stats=kwargs.get("dataset_stats"),
+        )
 
     else:
         raise NotImplementedError(f"Processor for policy type '{policy_cfg.type}' is not implemented.")
@@ -416,6 +430,11 @@ def make_policy(
         policy = policy_cls(**kwargs)
 
     policy.to(cfg.device)
+    if ds_meta is not None and hasattr(policy, "set_dataset_stats"):
+        try:
+            policy.set_dataset_stats(ds_meta.stats)
+        except Exception as exc:  # pragma: no cover - safety net
+            logging.warning(f"Failed to set dataset stats for policy {cfg.type}: {exc}")
     assert isinstance(policy, torch.nn.Module)
 
     # policy = torch.compile(policy, mode="reduce-overhead")

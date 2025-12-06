@@ -118,6 +118,13 @@ phone = ["hebi-py>=2.8.0,<2.12.0", "teleop>=0.1.0,<0.2.0", "fastapi<1.0"]
 # Policies
 pi = ["transformers @ git+https://github.com/huggingface/transformers.git@fix/lerobot_openpi"]
 smolvla = ["lerobot[transformers-dep]", "num2words>=0.5.14,<0.6.0", "accelerate>=1.7.0,<2.0.0", "safetensors>=0.4.3,<1.0.0"]
+vla0 = [
+    "lerobot[transformers-dep]",
+    "peft>=0.14.0,<1.0.0",
+    "qwen-vl-utils>=0.0.8,<0.1.0",
+    "bitsandbytes>=0.45.0,<0.48.0",
+    "Pillow>=10.0.0,<13.0.0",
+]
 groot = [
     "lerobot[transformers-dep]",
     "peft>=0.13.0,<1.0.0",
@@ -156,6 +163,7 @@ all = [
     "lerobot[intelrealsense]",
     "lerobot[pi]",
     "lerobot[smolvla]",
+    "lerobot[vla0]",
     # "lerobot[groot]", TODO(Steven): Gr00t requires specific installation instructions for flash-attn
     "lerobot[hilserl]",
     "lerobot[async]",
@@ -187,7 +195,9 @@ lerobot-edit-dataset="lerobot.scripts.lerobot_edit_dataset:main"
 
 # ---------------- Tool Configurations ----------------
 [tool.setuptools.packages.find]
-where = ["src"]
+# Include the main src/ tree and the vendored vla0/ package so that vla0.* modules
+# are importable after installation (needed for the VLA0 policy wrapper).
+where = ["src", "vla0"]
 
 [tool.ruff]
 target-version = "py310"

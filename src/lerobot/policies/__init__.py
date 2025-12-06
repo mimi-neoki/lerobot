@@ -20,6 +20,7 @@ from .pi05.configuration_pi05 import PI05Config as PI05Config
 from .smolvla.configuration_smolvla import SmolVLAConfig as SmolVLAConfig
 from .smolvla.processor_smolvla import SmolVLANewLineProcessor
 from .tdmpc.configuration_tdmpc import TDMPCConfig as TDMPCConfig
+from .vla0.configuration_vla0 import VLA0Config as VLA0Config
 from .vqbet.configuration_vqbet import VQBeTConfig as VQBeTConfig
 
 __all__ = [
@@ -28,6 +29,7 @@ __all__ = [
     "PI0Config",
     "PI05Config",
     "SmolVLAConfig",
+    "VLA0Config",
     "TDMPCConfig",
     "VQBeTConfig",
     "GrootConfig",
