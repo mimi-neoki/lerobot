@@ -51,7 +51,9 @@ class VLA0PackInputsProcessor(ProcessorStep):
         observation = transition.get(TransitionKey.OBSERVATION) or {}
         complementary = dict(transition.get(TransitionKey.COMPLEMENTARY_DATA, {}))
 
-        image_keys = sorted([k for k in observation if k.startswith(OBS_IMAGES)])
+        image_keys = sorted(
+            [k for k in observation if k.startswith(OBS_IMAGES) and not k.endswith("_is_pad")]
+        )
         if len(image_keys) == 0:
             raise ValueError("VLA0 requires at least one camera observation (keys starting with observation.images).")
         if self.num_cameras is not None and len(image_keys) != self.num_cameras:
