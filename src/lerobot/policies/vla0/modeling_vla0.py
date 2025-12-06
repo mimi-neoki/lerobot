@@ -51,6 +51,7 @@ class VLA0Policy(PreTrainedPolicy):
         _ensure_vla0_on_path()
         try:
             from rv_train.models.qwen.model import QwenActor
+            import rv_train.constants as C
         except ImportError as exc:  # pragma: no cover - runtime guard
             raise ImportError(
                 "rv_train (vla0) modules are missing. Install extras with `pip install -e '.[vla0]'`."
@@ -65,7 +66,7 @@ class VLA0Policy(PreTrainedPolicy):
 
         self.actor = QwenActor(
             qwen_model_id=self.config.qwen_model_id,
-            action_type="ORIGINAL",
+            action_type=C.ORIGINAL,
             original_action_dim=action_dim,
             horizon=self.config.horizon,
             history=self.config.n_obs_steps,
