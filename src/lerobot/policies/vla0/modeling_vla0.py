@@ -72,6 +72,10 @@ class VLA0Policy(PreTrainedPolicy):
                 _, h, w = first_image.shape
                 self.config.rgb_img_size = (h, w)
 
+        # Avoid using in-model tiling (known to assume square-ish inputs) when multiple cameras.
+        if num_cameras > 1 and self.config.tiled_rgb_imgs:
+            self.config.tiled_rgb_imgs = False
+
         self.actor = QwenActor(
             qwen_model_id=self.config.qwen_model_id,
             action_type=C.ORIGINAL,
