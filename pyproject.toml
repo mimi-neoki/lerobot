@@ -124,6 +124,7 @@ vla0 = [
     "qwen-vl-utils>=0.0.8,<0.1.0",
     "Pillow>=10.0.0,<13.0.0",
     "tbparse>=0.0.7,<0.1.0",
+    "tensorboardX>=2.6,<3.0",
 ]
 groot = [
     "lerobot[transformers-dep]",
