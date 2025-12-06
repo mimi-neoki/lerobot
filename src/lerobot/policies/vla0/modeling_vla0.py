@@ -64,6 +64,14 @@ class VLA0Policy(PreTrainedPolicy):
         num_cameras = len(self.config.image_features) if self.config.image_features else self.config.num_cameras
         self.config.num_cameras = num_cameras
 
+        # If requested, infer image size from dataset feature shapes.
+        if self.config.auto_set_rgb_from_dataset and self.config.image_features:
+            first_image = next(iter(self.config.image_features.values()))
+            # PolicyFeature.shape is (C, H, W)
+            if len(first_image.shape) == 3:
+                _, h, w = first_image.shape
+                self.config.rgb_img_size = (h, w)
+
         self.actor = QwenActor(
             qwen_model_id=self.config.qwen_model_id,
             action_type=C.ORIGINAL,

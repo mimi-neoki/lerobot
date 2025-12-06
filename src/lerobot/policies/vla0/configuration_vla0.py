@@ -34,7 +34,10 @@ class VLA0Config(PreTrainedConfig):
 
     # Vision settings
     num_cameras: int = 1
+    # (height, width) expected by Qwen processor; will be overridden by dataset shape when
+    # `auto_set_rgb_from_dataset` is True.
     rgb_img_size: tuple[int, int] = (224, 224)
+    auto_set_rgb_from_dataset: bool = True
     tiled_rgb_imgs: bool = True
     add_vision_id: bool = True
 
